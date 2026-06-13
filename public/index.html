@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#E07020">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="/iconon.png">
+<link rel="icon" type="image/png" href="/iconon.png">
+<meta property="og:title" content="Botón Naranja — Pausa · Presencia · Energía">
+<meta property="og:description" content="Regulación emocional inmediata para docentes. Para cuando el aula te desborda y tenés que volver en 10 minutos.">
+<meta property="og:image" content="https://boton-naranja.vercel.app/logon.png">
+<meta property="og:type" content="website">
+<title>Botón Naranja — Para quienes sostienen el aula</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html { height: 100%; }
+  body { font-family: 'Poppins', sans-serif; background: #FDF5EE; min-height: 100%; display: flex; justify-content: center; }
+  .app { width: 100%; max-width: 460px; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 0 22px 52px; }
+
+  .header { width:100%; padding:28px 0 16px; display:flex; flex-direction:column; align-items:center; gap:4px; }
+  .brand-main { font-family:'Playfair Display',serif; font-size:21px; color:#7A3800; letter-spacing:.04em; }
+  .brand-sub { font-size:10px; font-weight:300; letter-spacing:.18em; text-transform:uppercase; color:#A06030; opacity:.7; }
+  .header-divider { width:32px; height:1.5px; background:#E8A060; margin-top:8px; border-radius:2px; }
+
+  .screen { display:none; flex-direction:column; align-items:center; width:100%; }
+  .screen.active { display:flex; }
+
+  .welcome-eyebrow { font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:#E07020; font-weight:500; text-align:center; margin-top:24px; }
+  .welcome-title { font-family:'Playfair Display',serif; font-size:34px; line-height:1.2; color:#1A1A1A; margin-top:10px; text-align:center; }
+  .welcome-title em { font-style:italic; color:#E07020; }
+  .welcome-sub { font-size:14px; line-height:1.7; color:#A06030; margin-top:14px; text-align:center; font-weight:300; max-width:300px; }
+
+  .pulse-wrap { margin:44px 0 32px; display:flex; flex-direction:column; align-items:center; gap:14px; }
+  .pulse-btn { width:148px; height:148px; border-radius:50%; background:#E07020; border:none; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px; animation:pulseNaranja 2.8s ease-in-out infinite; transition:transform .15s; box-shadow:0 8px 32px rgba(224,112,32,.25); }
+  .pulse-btn:active { transform:scale(.95); animation:none; }
+  .pulse-btn-label { font-family:'Playfair Display',serif; font-size:15px; font-style:italic; color:white; text-align:center; line-height:1.3; pointer-events:none; }
+  .pulse-btn-sub { font-size:10px; font-weight:300; color:rgba(255,255,255,.65); pointer-events:none; }
+  @keyframes pulseNaranja { 0%{box-shadow:0 0 0 0 rgba(224,112,32,.35)}70%{box-shadow:0 0 0 26px rgba(224,112,32,0)}100%{box-shadow:0 0 0 0 rgba(224,112,32,0)} }
+  .pulse-hint { font-size:12px; color:#A06030; font-weight:300; opacity:.7; }
+
+  .section-title { font-family:'Playfair Display',serif; font-size:22px; line-height:1.3; text-align:center; color:#1A1A1A; margin-bottom:6px; margin-top:8px; }
+  .section-sub { font-size:13px; color:#A06030; text-align:center; margin-bottom:22px; font-weight:300; line-height:1.55; }
+
+  .usuario-grid { display:grid; grid-template-columns:1fr 1fr; gap:11px; width:100%; }
+  .usuario-card { background:#FFF8F2; border:1.5px solid #F0C898; border-radius:16px; padding:18px 12px; cursor:pointer; text-align:center; display:flex; flex-direction:column; align-items:center; gap:7px; transition:all .2s; -webkit-user-select:none; }
+  .usuario-card.selected { border-color:#E07020; background:#FDEBD0; }
+  .usuario-icon { font-size:26px; }
+  .usuario-label { font-size:13px; font-weight:500; color:#1A1A1A; line-height:1.3; }
+  .usuario-sublabel { font-size:11px; font-weight:300; color:#A06030; line-height:1.3; }
+
+  .badge { display:inline-flex; align-items:center; gap:6px; background:#FDEBD0; border:1px solid #E8A060; border-radius:20px; padding:5px 13px; font-size:12px; color:#7A3800; font-weight:500; margin-bottom:18px; margin-top:4px; }
+
+  .feel-label { font-size:13px; color:#A06030; margin-bottom:8px; font-weight:300; line-height:1.6; width:100%; }
+  .feel-textarea { width:100%; min-height:100px; border:1.5px solid #F0C898; border-radius:14px; padding:14px; font-family:'Poppins',sans-serif; font-size:15px; font-weight:300; color:#1A1A1A; background:#FFF8F2; resize:none; outline:none; transition:border-color .2s; line-height:1.6; }
+  .feel-textarea:focus { border-color:#E07020; }
+
+  .chips-label { font-size:11px; color:#E8A060; font-weight:400; margin-bottom:8px; width:100%; letter-spacing:.05em; text-transform:uppercase; }
+  .chips { display:flex; flex-wrap:wrap; gap:7px; margin-bottom:18px; width:100%; }
+  .chip { background:#FFF8F2; border:1.5px solid #F0C898; border-radius:20px; padding:7px 13px; font-size:12px; cursor:pointer; transition:all .15s; color:#A06030; font-family:'Poppins',sans-serif; -webkit-user-select:none; }
+  .chip.active { background:#FDEBD0; border-color:#E07020; color:#7A3800; }
+
+  .btn-main { width:100%; padding:17px; background:#E07020; color:white; border:none; border-radius:14px; font-family:'Poppins',sans-serif; font-size:15px; font-weight:500; cursor:pointer; transition:background .2s,transform .1s; -webkit-appearance:none; }
+  .btn-main:active { transform:scale(.98); background:#7A3800; }
+  .btn-main:disabled { background:#F0C898; cursor:not-allowed; }
+  .btn-ghost { background:none; border:1.5px solid #F0C898; color:#A06030; border-radius:14px; padding:13px; font-family:'Poppins',sans-serif; font-size:14px; cursor:pointer; width:100%; margin-top:10px; -webkit-appearance:none; }
+  .btn-ghost:active { border-color:#E07020; color:#7A3800; }
+  .back-btn { background:none; border:none; color:#A06030; font-size:12px; cursor:pointer; padding:8px 0; display:flex; align-items:center; gap:4px; font-family:'Poppins',sans-serif; margin-top:4px; font-weight:300; align-self:flex-start; }
+
+  .loading-wrap { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:65vh; gap:22px; width:100%; }
+  .breath-circle { width:88px; height:88px; border-radius:50%; background:#E8A060; animation:breathe 4s ease-in-out infinite; opacity:.75; }
+  @keyframes breathe { 0%,100%{transform:scale(.82);opacity:.5}50%{transform:scale(1.18);opacity:.9} }
+  .loading-text { font-size:14px; color:#A06030; font-weight:300; text-align:center; line-height:1.7; }
+  .loading-sub { font-size:11px; color:#E8A060; text-align:center; font-weight:300; letter-spacing:.05em; }
+
+  .response-card { background:#FFF8F2; border-radius:20px; padding:26px 22px; width:100%; margin-top:6px; border:1px solid #F0C898; box-shadow:0 4px 24px rgba(224,112,32,.07); }
+  .response-eyebrow { font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:#E07020; font-weight:500; margin-bottom:14px; }
+  .response-text { font-size:14px; line-height:1.85; color:#1A1A1A; font-weight:300; }
+  .response-text strong { font-weight:600; color:#7A3800; display:block; margin:10px 0 6px; font-size:15px; font-family:'Playfair Display',serif; font-style:italic; }
+  .response-text p { margin-bottom:8px; }
+
+  .paywall-card { background:#FFF8F2; border-radius:20px; padding:28px 22px; width:100%; margin-top:6px; border:1.5px solid #E07020; text-align:center; }
+  .paywall-icon { font-size:36px; margin-bottom:12px; }
+  .paywall-title { font-family:'Playfair Display',serif; font-size:22px; color:#7A3800; margin-bottom:10px; line-height:1.3; }
+  .paywall-sub { font-size:13px; color:#A06030; font-weight:300; line-height:1.6; margin-bottom:20px; }
+  .paywall-price { font-size:28px; font-weight:600; color:#E07020; margin-bottom:4px; }
+  .paywall-trial { font-size:12px; color:#E8A060; margin-bottom:20px; font-weight:300; }
+  .btn-pay { width:100%; padding:17px; background:#E07020; color:white; border:none; border-radius:14px; font-family:'Poppins',sans-serif; font-size:15px; font-weight:500; cursor:pointer; text-decoration:none; display:block; text-align:center; }
+  .btn-pay:active { background:#7A3800; }
+
+  .error-note { background:#FFF8F2; border:1px solid #F0C898; border-radius:12px; padding:16px; font-size:13px; color:#7A3800; line-height:1.6; width:100%; margin-top:12px; font-weight:300; }
+
+  .footer { margin-top:28px; text-align:center; display:flex; flex-direction:column; align-items:center; gap:4px; }
+  .footer-zf { font-size:10px; letter-spacing:.15em; text-transform:uppercase; color:#A06030; opacity:.45; }
+  .footer-legal { font-size:10px; color:#A06030; opacity:.35; font-weight:300; max-width:260px; line-height:1.5; }
+
+  .action-row { display:flex; flex-direction:column; gap:10px; width:100%; margin-top:18px; }
+  .mt24 { margin-top:24px; }
+
+  @media (prefers-reduced-motion: reduce) { .pulse-btn,.breath-circle { animation:none; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <audio id="bg-music" loop>
+    <source src="/orangeambient.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="focus-music" loop>
+    <source src="/orangemeditation.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- BIENVENIDA -->
+  <div class="screen active" id="s-welcome">
+    <div class="header">
+      <div class="brand-main">Botón Naranja</div>
+      <div class="brand-sub">Pausa · Presencia · Energía</div>
+      <div class="header-divider"></div>
+    </div>
+    <div class="welcome-eyebrow">Para quienes sostienen el aula</div>
+    <p class="welcome-title">Diez minutos<br>para vos.<br><em>Solo para vos.</em></p>
+    <p class="welcome-sub">Lo que pasó en el aula se queda ahí.<br>Ahora es tu turno.<br>Un ejercicio. Ahora.</p>
+    <div class="pulse-wrap">
+      <button class="pulse-btn" onclick="goTo('s-usuario')">
+        <span class="pulse-btn-label">Necesito<br>mi pausa</span>
+        <span class="pulse-btn-sub">tocá aquí</span>
+      </button>
+      <p class="pulse-hint">Disponible cuando lo necesites</p>
+    </div>
+    <div class="footer">
+      <span class="footer-zf">· Zen Femenino ·</span>
+      <span class="footer-legal">Este espacio no reemplaza atención profesional.</span>
+    </div>
+  </div>
+
+  <!-- USUARIO -->
+  <div class="screen" id="s-usuario">
+    <div class="header">
+      <div class="brand-main">Botón Naranja</div>
+      <div class="header-divider"></div>
+    </div>
+    <p class="section-title">¿Desde dónde llegás?</p>
+    <p class="section-sub">Tu contexto importa.<br>La respuesta se adapta a tu momento.</p>
+    <div class="usuario-grid">
+      <div class="usuario-card" onclick="selectUsuario(this,'🏫','Docente de aula','acaba de vivir algo difícil en el aula y tiene que volver en minutos')">
+        <span class="usuario-icon">🏫</span>
+        <span class="usuario-label">Soy docente</span>
+        <span class="usuario-sublabel">acabo de vivir algo difícil</span>
+      </div>
+      <div class="usuario-card" onclick="selectUsuario(this,'🤝','Maestra integradora','trabaja con niños con necesidades especiales sin las herramientas ni el apoyo necesario')">
+        <span class="usuario-icon">🤝</span>
+        <span class="usuario-label">Soy integradora</span>
+        <span class="usuario-sublabel">sin herramientas ni apoyo</span>
+      </div>
+      <div class="usuario-card" onclick="selectUsuario(this,'📋','Directivo escolar','sostiene a su equipo, a los padres y a los alumnos y no tiene con quién descomprimirse')">
+        <span class="usuario-icon">📋</span>
+        <span class="usuario-label">Soy directivo/a</span>
+        <span class="usuario-sublabel">sostengo a todos y nadie me sostiene</span>
+      </div>
+      <div class="usuario-card" onclick="selectUsuario(this,'🌅','Al final del día','el día terminó pero el cuerpo y la cabeza siguen en el aula')">
+        <span class="usuario-icon">🌅</span>
+        <span class="usuario-label">Terminé el día</span>
+        <span class="usuario-sublabel">pero no puedo desconectarme</span>
+      </div>
+    </div>
+    <button class="btn-main mt24" id="btn-continuar" disabled onclick="goTo('s-input')">Continuar</button>
+  </div>
+
+  <!-- INPUT -->
+  <div class="screen" id="s-input">
+    <div class="header">
+      <div class="brand-main">Botón Naranja</div>
+      <div class="header-divider"></div>
+    </div>
+    <button class="back-btn" onclick="goTo('s-usuario')">← Volver</button>
+    <div id="badge-input"></div>
+    <p class="section-title">¿Qué está pasando?</p>
+    <p class="feel-label" style="margin-top:8px">Escribí cómo te sentís ahora mismo, o tocá una o más opciones de abajo. Podés hacer las dos cosas.</p>
+    <textarea class="feel-textarea" id="feel-input"
+      placeholder="Tuve una situación muy difícil, no sé cómo manejarlo, estoy desbordada..."></textarea>
+    <p class="chips-label" style="margin-top:12px">O elegí lo que más te resuena</p>
+    <div class="chips">
+      <div class="chip" onclick="toggleChip(this,'Estoy desbordada/o')">Estoy desbordada/o</div>
+      <div class="chip" onclick="toggleChip(this,'Me siento impotente')">Me siento impotente</div>
+      <div class="chip" onclick="toggleChip(this,'Estoy furiosa/o')">Estoy furiosa/o</div>
+      <div class="chip" onclick="toggleChip(this,'No tengo herramientas para esto')">No tengo herramientas</div>
+      <div class="chip" onclick="toggleChip(this,'Siento que no puedo más')">Siento que no puedo más</div>
+      <div class="chip" onclick="toggleChip(this,'Tengo que volver al aula ya')">Tengo que volver ya</div>
+      <div class="chip" onclick="toggleChip(this,'Me llevo todo a casa')">Me llevo todo a casa</div>
+      <div class="chip" onclick="toggleChip(this,'Siento culpa')">Siento culpa</div>
+      <div class="chip" onclick="toggleChip(this,'Nadie me apoya en esto')">Nadie me apoya</div>
+      <div class="chip" onclick="toggleChip(this,'Estoy agotada/o emocionalmente')">Estoy agotada/o</div>
+    </div>
+    <button class="btn-main" id="btn-ejercicio" disabled onclick="buscarEjercicio()">Necesito mi pausa ahora</button>
+  </div>
+
+  <!-- CARGANDO -->
+  <div class="screen" id="s-loading">
+    <div class="loading-wrap">
+      <div class="breath-circle"></div>
+      <p class="loading-text">Preparando tu pausa.<br><strong style="font-weight:400">Inhalá… exhalá más lento.</strong></p>
+      <p class="loading-sub">Este momento es tuyo. Solo tuyo.</p>
+    </div>
+  </div>
+
+  <!-- RESPUESTA -->
+  <div class="screen" id="s-response">
+    <div class="header">
+      <div class="brand-main">Botón Naranja</div>
+      <div class="header-divider"></div>
+    </div>
+    <div id="badge-response"></div>
+    <div id="response-content"></div>
+    <div class="action-row">
+      <button class="btn-main" onclick="otroEjercicio()">Quiero otro ejercicio</button>
+      <button class="btn-ghost" onclick="detenerMusica(); goTo('s-welcome')">Volver al inicio</button>
+    </div>
+    <div class="footer" style="margin-top:24px">
+      <span class="footer-zf">· Zen Femenino ·</span>
+      <span class="footer-legal">Este espacio no reemplaza atención profesional.</span>
+    </div>
+  </div>
+
+  <!-- PAYWALL -->
+  <div class="screen" id="s-paywall">
+    <div class="header">
+      <div class="brand-main">Botón Naranja</div>
+      <div class="header-divider"></div>
+    </div>
+    <div class="paywall-card">
+      <div class="paywall-icon">🧡</div>
+      <p class="paywall-title">Tus primeros ejercicios<br>fueron gratuitos.</p>
+      <p class="paywall-sub">Botón Naranja está diseñado para estar ahí cada vez que el aula te desborda. Acceso ilimitado por menos de lo que cuesta un café.</p>
+      <p class="paywall-price">USD 9,99<span style="font-size:14px;font-weight:300;color:#A06030">/mes</span></p>
+      <p class="paywall-trial">Cancelás cuando querés</p>
+      <a class="btn-pay" href="https://tez.lemonsqueezy.com/checkout/buy/9330ca28-f833-4cbd-985d-d8443416f774" target="_blank">Suscribirme</a>
+    </div>
+    <button class="btn-ghost" style="margin-top:12px" onclick="goTo('s-welcome')">Volver al inicio</button>
+    <div class="footer" style="margin-top:24px">
+      <span class="footer-zf">· Zen Femenino ·</span>
+      <span class="footer-legal">Este espacio no reemplaza atención profesional.</span>
+    </div>
+  </div>
+
+</div>
+<script>
+  let usuarioActual = { icon:'', label:'', contexto:'' };
+  let chipsActivos = [];
+  let ejercicioAnterior = '';
+  let usoCount = parseInt(localStorage.getItem('bn_usos') || '0');
+
+  const CHIPS_LISTA = ['Estoy desbordada/o','Me siento impotente','Estoy furiosa/o',
+    'No tengo herramientas para esto','Siento que no puedo más','Tengo que volver al aula ya',
+    'Me llevo todo a casa','Siento culpa','Nadie me apoya en esto','Estoy agotada/o emocionalmente'];
+
+  function goTo(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo(0,0);
+  }
+
+  function selectUsuario(el, icon, label, contexto) {
+    document.querySelectorAll('.usuario-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    usuarioActual = { icon, label, contexto };
+    document.getElementById('btn-continuar').disabled = false;
+    const badge = `<div class="badge">${icon} ${label}</div>`;
+    document.getElementById('badge-input').innerHTML = badge;
+    document.getElementById('badge-response').innerHTML = badge;
+  }
+
+  function toggleChip(el, texto) {
+    el.classList.toggle('active');
+    chipsActivos = el.classList.contains('active')
+      ? [...chipsActivos, texto]
+      : chipsActivos.filter(c => c !== texto);
+    const ta = document.getElementById('feel-input');
+    const libre = ta.value.split('. ')
+      .map(s => s.trim().replace(/\.$/, ''))
+      .filter(s => s && !CHIPS_LISTA.includes(s))
+      .join('. ');
+    const todo = [libre, ...chipsActivos].filter(Boolean).join('. ');
+    ta.value = todo ? todo + '.' : '';
+    document.getElementById('btn-ejercicio').disabled = !ta.value.trim();
+  }
+
+  document.getElementById('feel-input').addEventListener('input', function() {
+    document.getElementById('btn-ejercicio').disabled = !this.value.trim();
+  });
+
+  function iniciarMusica() {
+    const audio = document.getElementById('bg-music');
+    audio.volume = 0.3;
+    audio.play().catch(() => {});
+  }
+
+  function toggleMusica() {
+    const audio = document.getElementById('bg-music');
+    const btn = document.getElementById('btn-musica');
+    if (audio.paused) { audio.play(); btn.innerHTML = '🔊 música'; }
+    else { audio.pause(); btn.innerHTML = '🔇 música'; }
+  }
+
+  function toggleFoco() {
+    const relax = document.getElementById('bg-music');
+    const focus = document.getElementById('focus-music');
+    const btn = document.getElementById('btn-foco');
+    if (focus.paused) {
+      relax.pause();
+      focus.volume = 0.3;
+      focus.play();
+      btn.style.color = '#E07020';
+      btn.style.borderColor = '#E07020';
+    } else {
+      focus.pause();
+      relax.volume = 0.3;
+      relax.play();
+      btn.style.color = '#E8A060';
+      btn.style.borderColor = '#F0C898';
+    }
+  }
+
+  function detenerMusica() {
+    const audio = document.getElementById('bg-music');
+    audio.pause(); audio.currentTime = 0;
+    const focus = document.getElementById('focus-music');
+    focus.pause(); focus.currentTime = 0;
+  }
+
+  async function buscarEjercicio() {
+    if (usoCount >= 3) { goTo('s-paywall'); return; }
+    const texto = document.getElementById('feel-input').value.trim();
+    if (!texto) return;
+    goTo('s-loading');
+
+    try {
+      const res = await fetch('/api/ejercicio', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          perfil: `${usuarioActual.label} — ${usuarioActual.contexto}`,
+          situacion: texto,
+          ejercicioAnterior: ejercicioAnterior || ''
+        })
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+
+      ejercicioAnterior = data.texto;
+      usoCount++;
+      localStorage.setItem('bn_usos', usoCount.toString());
+
+      const html = data.texto
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .split('\n').map(l => `<p>${l}</p>`).join('');
+
+      document.getElementById('response-content').innerHTML =
+        `<div class="response-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+            <div class="response-eyebrow" style="margin-bottom:0">Tu pausa · ahora mismo</div>
+            <div style="display:flex;gap:6px">
+              <button onclick="toggleMusica()" id="btn-musica" style="background:none;border:1px solid #F0C898;border-radius:20px;padding:4px 10px;font-size:11px;color:#E8A060;cursor:pointer;font-family:Poppins,sans-serif;">🔊 música</button>
+              <button onclick="toggleFoco()" id="btn-foco" style="background:none;border:1px solid #F0C898;border-radius:20px;padding:4px 10px;font-size:11px;color:#E8A060;cursor:pointer;font-family:Poppins,sans-serif;">🎯 meditación</button>
+            </div>
+          </div>
+          <div class="response-text">${html}</div>
+        </div>`;
+
+      iniciarMusica();
+      goTo('s-response');
+    } catch(e) {
+      document.getElementById('response-content').innerHTML =
+        `<div class="error-note"><strong>Algo falló.</strong><br><br>
+        Mientras tanto: tres respiraciones lentas. Exhalá más lento de lo que inhalás. Este momento es tuyo.</div>`;
+      goTo('s-response');
+    }
+  }
+
+  function otroEjercicio() {
+    if (usoCount >= 3) { goTo('s-paywall'); return; }
+    document.getElementById('feel-input').value = '';
+    chipsActivos = [];
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+    document.getElementById('btn-ejercicio').disabled = true;
+    detenerMusica();
+    goTo('s-input');
+  }
+</script>
+</body>
+</html>
